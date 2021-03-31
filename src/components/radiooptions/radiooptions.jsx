@@ -29,7 +29,7 @@ const RadioOptions = (props) => {
           dispValue={props.penfaceForm["penfaceRadio"].value}
           name={props.penfaceForm["penfaceRadio"].name}
           valid={props.penfaceForm["penfaceRadio"].valid}
-          checked={props.penfaceForm["penfaceRadio"].checked}
+          checked={props.reports === "penfaceRadio" ? true : false}
         />
       </div>
       <div

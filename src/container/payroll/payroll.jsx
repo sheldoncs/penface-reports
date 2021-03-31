@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import * as actionCreators from "../../store/actions/index";
 import classes from "./Payroll.module.css";
 import Cover from "../../components/cover/cover";
+import FSSU from "../../components/FSSU/fssu";
 
 class Payroll extends Component {
   state = {
@@ -96,6 +97,7 @@ class Payroll extends Component {
         // checked: false,
       },
     },
+    reports: "penfaceRadio",
     option: "email",
     disableBuild: true,
     openCover: false,
@@ -223,9 +225,7 @@ class Payroll extends Component {
       /*penfaceRadio undefined
  fssuRadio
 fssuRadio undefined */
-
-      tempState[key].checked = true;
-      console.log(key, tempState[key].checked);
+      this.setState({ reports: key });
     }
   };
 
@@ -328,25 +328,29 @@ fssuRadio undefined */
           <RadioOptions
             inputChangeHandler={this.changeHandler}
             penfaceForm={this.state.penfaceForm}
+            reports={this.state.reports}
           />
-
-          <Penface
-            penfaceForm={this.state.penfaceForm}
-            selectedOption={this.state.option}
-            disableBuild={this.state.disableBuild}
-            disableProcess={this.state.disableProcess}
-            disableFinalReport={this.state.disableFinalReport}
-            emailSheet={(email) => this.emailSheet(email)}
-            processFinalReport={() => this.processFinalReport()}
-            processSheet={() => this.processSheet()}
-            clicked={(val) => this.penfaceHandler(val)}
-            buildSpreadSheet={() => this.buildSpreadSheet()}
-            success={this.state.buildState}
-            onFileChange={(event) => this.onFileChange(event)}
-            onFileUpload={this.onFileUpload}
-            fileInput={this.setFileInput}
-            inputChangeHandler={(eve, key) => this.changeHandler(eve, key)}
-          />
+          {this.state.reports === "penfaceRadio" ? (
+            <Penface
+              penfaceForm={this.state.penfaceForm}
+              selectedOption={this.state.option}
+              disableBuild={this.state.disableBuild}
+              disableProcess={this.state.disableProcess}
+              disableFinalReport={this.state.disableFinalReport}
+              emailSheet={(email) => this.emailSheet(email)}
+              processFinalReport={() => this.processFinalReport()}
+              processSheet={() => this.processSheet()}
+              clicked={(val) => this.penfaceHandler(val)}
+              buildSpreadSheet={() => this.buildSpreadSheet()}
+              success={this.state.buildState}
+              onFileChange={(event) => this.onFileChange(event)}
+              onFileUpload={this.onFileUpload}
+              fileInput={this.setFileInput}
+              inputChangeHandler={(eve, key) => this.changeHandler(eve, key)}
+            />
+          ) : this.state.reports === "fssuRadio" ? (
+            <FSSU />
+          ) : null}
         </div>
       </React.Fragment>
     );
