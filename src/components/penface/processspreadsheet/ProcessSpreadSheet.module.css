@@ -1,0 +1,7 @@
+.ProcessSpreadSheet{
+    display:flex;
+    flex-direction: column;
+    font-family: 'Blinker', sans-serif;
+    margin:auto;
+    width:301px;
+}

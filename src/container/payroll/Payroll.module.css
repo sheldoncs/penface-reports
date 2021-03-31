@@ -1,0 +1,14 @@
+.Payroll{
+    display:block;
+    border:2px solid #008B8B;
+    border-radius: 20px;
+    width:90%;
+    height:550px;
+    margin:30px auto;
+    
+}
+.CenterSpinner{
+    width:100px;
+    margin:70px auto;
+    display:fixed;
+}

@@ -1,0 +1,36 @@
+.Container {
+    display:column;
+    flex-direction: row;
+    width:310px;
+    margin:auto;
+}
+.Penface{
+    background-color: #fff;
+    color:#000;
+    font-family: 'Blinker', sans-serif;
+    display:block;
+    margin:auto;
+    font-size: 15px;
+    border:1px #ccc solid;
+    border-radius:5px;
+    width:310px;
+    height:57px;
+    margin-top:50px;
+    
+}
+.pos {
+    display:block;
+    top:-90px !important;
+}
+.ImgSize {
+    width:40px;
+    width:40px;
+}
+button {
+    background-color: #EFEFEF !important;
+    border:2px solid #008B8B !important;
+    height:50px !important;
+    color:#767676 !important;
+    font-weight: bold !important;
+    border-radius:5px !important;
+}
