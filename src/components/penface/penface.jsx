@@ -5,8 +5,9 @@ import PayEndDateInput from "./payenddate/payenddate";
 import SendSheet from "./emailspreadsheet/emailspreadsheet";
 import ProcessSpreadSheet from "./processspreadsheet/processspreadsheet";
 import FinalReport from "./finalreport/finalreport";
-
+import ErrorModal from "../../components/errorModalForm/errorModalForm";
 import Upload from "./penfaceupload/penfaceupload";
+import Cover from "../cover/cover";
 
 const penface = (props) => {
   let addSheet = true;
@@ -112,7 +113,7 @@ const penface = (props) => {
       {props.selectedOption == "buildspreadsheet" ? (
         <PayEndDateInput
           clicked={() => props.buildSpreadSheet()}
-          success={props.success}
+          success={props.buildState}
           disableBuild={props.disableBuild}
           inputChangeHandler={(eve, key) => props.inputChangeHandler(eve, key)}
           penfaceForm={props.penfaceForm.inputs}
@@ -120,7 +121,7 @@ const penface = (props) => {
       ) : null}
       {props.selectedOption == "sendspreadsheet" ? (
         <SendSheet
-          disabled={props.disableBuild}
+          disabled={props.disableSend}
           emailSheet={() =>
             props.emailSheet(props.penfaceForm.inputs["email"].value)
           }
@@ -148,6 +149,17 @@ const penface = (props) => {
           disabled={props.disableFinalReport}
           processFinalReport={() => props.processFinalReport()}
         />
+      ) : null}
+      {props.buildState === "failure" ? (
+        <div>
+          <ErrorModal
+            closeErrorModal={props.closeErrorModal}
+            errorMessage={props.errorMessage}
+            buildState={props.buildState}
+          >
+            Penface Error
+          </ErrorModal>
+        </div>
       ) : null}
     </React.Fragment>
   );

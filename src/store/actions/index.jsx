@@ -7,4 +7,5 @@ export {
   uploadSpreadSheet,
   processSpreadSheet,
   processFinalReport,
+  processFSSUReport,
 } from "./payroll";

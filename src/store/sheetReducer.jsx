@@ -29,6 +29,9 @@ const reducer = (state = initialState, action) => {
     case actionTypes.FINAL_REPORT:
       state = { ...state, success: action.success };
       break;
+    case actionTypes.PROCESS_FSSU:
+      state = { ...state, success: action.success };
+      break;
     default:
       state = JSON.parse(sessionStorage.getItem(SHEET_RESULT)) || state;
       break;

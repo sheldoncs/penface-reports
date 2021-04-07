@@ -22,7 +22,7 @@ class Payroll extends Component {
           validation: {
             required: true,
           },
-          valid: true,
+          valid: false,
           touched: false,
           exist: false,
         },
@@ -52,7 +52,7 @@ class Payroll extends Component {
             required: true,
             regExpression: /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/,
           },
-          valid: true,
+          valid: false,
           touched: false,
           exist: false,
         },
@@ -100,12 +100,18 @@ class Payroll extends Component {
     reports: "penfaceRadio",
     option: "email",
     disableBuild: true,
+    disableSend: true,
     openCover: false,
     disableProcess: true,
     disableFinalReport: true,
     buildState: null,
     buildStart: false,
     myref: null,
+    fssuOption: "email",
+    disableFSSUReport: true,
+    disableBannerJournalReport: true,
+    errorMessage: null,
+    nextProcess: "",
   };
   handleChange = (e) => {
     let tempState = { ...this.state };
@@ -126,6 +132,7 @@ class Payroll extends Component {
       event.target.files[0];
     console.log("event.target.files[0]", event.target.files[0]);
     this.setState({ ...tempState });
+
     // Update the state
   };
   onFileUpload = (e) => {
@@ -150,7 +157,9 @@ class Payroll extends Component {
       tempState.penfaceForm.inputs["penfacefile"].selectedFile.name;
     this.props.onUploadSheet(formData);
     this.setState({ buildStart: true, openCover: true });
-    this.state.myVar = setInterval(this.checkUpload, 5000);
+    this.state.myVar = setInterval(() => {
+      this.checkBuild("processSheet");
+    }, 5000);
   };
   handleFiles() {
     const fileList = this.files; /* now you can work with the file list */
@@ -201,31 +210,59 @@ class Payroll extends Component {
 
     this.setState({ ...tempState, option: val });
   };
+  closeErrorModalHandler = () => {
+    this.setState({ buildState: "" });
+  };
+  fssuHandler = (val) => {
+    let tempState = { ...this.state };
+    this.setState({ ...tempState, fssuOption: val });
+  };
+  processFSSUHandler = () => {
+    let tempState = { ...this.state };
+    this.setState({ buildStart: true, openCover: true });
+    this.onProcessFSSUReport(tempState.penfaceForm.inputs.payenddate.value);
+    this.state.myVar = setInterval(() => {
+      this.checkBuild("last");
+    }, 5000);
+  };
   setFileInput = (r) => {
     this.state.myref = r;
   };
   changeHandler = (event, key) => {
     let tempState = { ...this.state.penfaceForm };
-    console.log(key);
+
     if (key.indexOf("Radio") < 0) {
       let isValid = this.checkValidity(
         event.target.value,
         tempState.inputs[key].validation
       );
 
+      tempState.inputs[key].valid = isValid;
       if (isValid) {
         tempState.inputs[key].value =
           key == "payenddate"
             ? this.formattedDate(event.target.value)
             : event.target.value;
-
         this.setState({ ...tempState, disableBuild: false });
       }
-    } else {
-      /*penfaceRadio undefined
- fssuRadio
-fssuRadio undefined */
+    } else if (key.indexOf("Radio") >= 0) {
       this.setState({ reports: key });
+    }
+
+    if (
+      this.state.reports.indexOf("fssuRadio") >= 0 ||
+      this.state.reports.indexOf("bannerJournalRadio") >= 0
+    ) {
+      if (
+        tempState.inputs["email"].valid &&
+        tempState.inputs["payenddate"].valid
+      ) {
+        if (this.state.reports == "fssuRadio") {
+          this.setState({ disableFSSUReport: false });
+        } else if (this.state.reports == "bannerJournalRadio") {
+          this.setState({ disableBannerJournalReport: false });
+        }
+      }
     }
   };
 
@@ -234,71 +271,43 @@ fssuRadio undefined */
 
     this.props.onBuildSheet(this.state.penfaceForm.inputs.payenddate.value);
     this.setState({ buildStart: true, openCover: true });
-    this.state.myVar = setInterval(this.checkBuild, 5000);
+    this.state.myVar = setInterval(() => {
+      this.checkBuild("emailFile");
+    }, 5000);
   };
-  checkUpload = () => {
-    console.log("checkUpload", this.props.success);
-    if (this.props.success) {
-      if (this.props.success == "success") {
-        this.stopInterval();
-        this.setState({ buildStart: false, disableProcess: false });
-      } else if (this.props.success.indexOf("failure") > -1) {
-        this.props.onBuildFailed("failure");
-        this.stopInterval();
-        this.setState({ buildStart: false, disableProcess: true });
-      }
-    }
-  };
-  checkProcess = () => {
-    console.log("checkProcess", this.props.success);
-    if (this.props.success) {
-      if (this.props.success == "success") {
-        this.stopInterval();
-        this.setState({ buildStart: false, disableFinalReport: false });
-      } else if (this.props.success.indexOf("failure") > -1) {
-        this.props.onBuildFailed("failure");
-        this.stopInterval();
-        this.setState({ buildStart: false, disableFinalReport: true });
-      }
-    }
-  };
-  checkFinalProcess = () => {
-    console.log("checkFinalProcess", this.props.success);
-    if (this.props.success) {
-      if (this.props.success == "success") {
-        this.setState({ disableFinalReport: true });
-        this.stopInterval();
-      } else if (this.props.success.indexOf("failure") > -1) {
-        this.props.onBuildFailed("failure");
-        this.stopInterval();
-        this.setState({ buildStart: false, disableFinalReport: true });
-      }
-    }
-  };
-  checkBuild = () => {
+
+  checkBuild = (nextProcess) => {
+    let tempState = { ...this.state };
+    tempState.nextProcess = nextProcess;
     console.log("checkBuild", this.props.success);
-    if (this.props.success) {
-      if (this.props.success == "success") {
-        this.stopInterval();
-        this.setState({ buildStart: false });
-      } else if (this.props.success.indexOf("failure") > -1) {
-        this.props.onBuildFailed("failure");
-        this.stopInterval();
-        this.setState({ buildStart: false });
-      }
+    tempState.buildState = "success";
+
+    if (this.props.success === "failure") {
+      console.log(this.props.success);
+      tempState.buildState = "failure";
+      tempState.errorMessage = "Network Service Issue!";
+      this.props.onBuildFailed("failure");
+      this.stopInterval(tempState);
+    }
+    if (this.props.success === "success") {
+      this.stopInterval(tempState);
     }
   };
   emailSheet = (email) => {
     this.setState({ buildStart: true });
     this.props.onEmailSheet(email);
     this.setState({ buildStart: true, openCover: true });
-    this.state.myVar = setInterval(this.checkBuild, 5000);
+    this.state.myVar = setInterval(() => {
+      this.checkBuild("upload");
+    }, 5000);
   };
   processSheet = () => {
     this.setState({ buildStart: true });
     this.props.onProcessSheet();
     this.setState({ buildStart: true, openCover: true });
-    this.state.myVar = setInterval(this.checkProcess, 5000);
+    this.state.myVar = setInterval(() => {
+      this.checkBuild("finalReport");
+    }, 5000);
   };
   processFinalReport = () => {
     let tempState = { ...this.state };
@@ -309,20 +318,53 @@ fssuRadio undefined */
         inputs["email"].value,
         inputs["payenddate"].value
       );
-      this.setState({ buildStart: false, openCover: false });
+      this.setState({ buildStart: true, openCover: true });
+      this.state.myVar = setInterval(() => {
+        this.checkBuild("last");
+      }, 5000);
     }
   };
-  stopInterval() {
+  stopInterval = (tempState) => {
+    if (tempState.buildState == "success") {
+      if (tempState.nextProcess == "sendFile") {
+        tempState.disableSend = false;
+      } else if (tempState.nextProcess == "processSheet") {
+        tempState.disableProcess = false;
+      } else if (tempState.nextProcess == "finalReport") {
+        tempState.disableFinalReport = false;
+      } else if (tempState.nextProcess == "last") {
+        tempState.disableFinalReport = false;
+        tempState.disableSend = false;
+        tempState.disableProcess = false;
+      }
+    } else if (tempState.buildState == "failure") {
+      if (tempState.nextProcess == "sendFile") {
+        tempState.disableSend = true;
+      } else if (tempState.nextProcess == "processSheet") {
+        tempState.disableProcess = true;
+      } else if (tempState.nextProcess == "finalReport") {
+        tempState.disableFinalReport = true;
+      } else if (tempState.nextProcess == "last") {
+        tempState.disableFinalReport = true;
+        tempState.disableSend = true;
+        tempState.disableProcess = true;
+      }
+    }
     clearInterval(this.state.myVar);
-    this.setState({ openCover: false });
-  }
+    this.setState({
+      openCover: false,
+      buildStart: false,
+      disableFSSUReport: true,
+      ...tempState,
+    });
+  };
 
   render() {
     return (
       <React.Fragment>
         <Cover show={this.state.openCover} />
         <div className={classes.CenterSpinner}>
-          {this.state.buildStart ? <Spinner /> : null}
+          {this.state.buildStart === true ? <Spinner /> : null}
         </div>
         <div className={classes.Payroll}>
           <RadioOptions
@@ -335,6 +377,7 @@ fssuRadio undefined */
               penfaceForm={this.state.penfaceForm}
               selectedOption={this.state.option}
               disableBuild={this.state.disableBuild}
+              disableSend={this.state.disableSend}
               disableProcess={this.state.disableProcess}
               disableFinalReport={this.state.disableFinalReport}
               emailSheet={(email) => this.emailSheet(email)}
@@ -342,14 +385,26 @@ fssuRadio undefined */
               processSheet={() => this.processSheet()}
               clicked={(val) => this.penfaceHandler(val)}
               buildSpreadSheet={() => this.buildSpreadSheet()}
-              success={this.state.buildState}
+              buildState={this.state.buildState}
               onFileChange={(event) => this.onFileChange(event)}
               onFileUpload={this.onFileUpload}
               fileInput={this.setFileInput}
+              closeErrorModal={this.closeErrorModalHandler}
+              errorMessage={this.state.errorMessage}
               inputChangeHandler={(eve, key) => this.changeHandler(eve, key)}
             />
           ) : this.state.reports === "fssuRadio" ? (
-            <FSSU />
+            <FSSU
+              fssuOption={this.state.fssuOption}
+              penfaceForm={this.state.penfaceForm}
+              clicked={this.fssuHandler}
+              processClick={this.processFSSUHandler}
+              disabled={this.state.disableFSSUReport}
+              inputChangeHandler={this.changeHandler}
+              reports={this.state.reports}
+              buildState={this.state.buildState}
+              closeErrorModal={this.closeErrorModalHandler}
+            />
           ) : null}
         </div>
       </React.Fragment>
@@ -366,6 +421,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onProcessFinalReport: (email, dateStr) =>
       dispatch(actionCreators.processFinalReport(email, dateStr)),
+    onProcessFSSUReport: (dateStr) =>
+      dispatch(actionCreators.processFSSUReport(dateStr)),
     onProcessSheet: () => dispatch(actionCreators.processSpreadSheet()),
     onUploadSheet: (formdata) =>
       dispatch(actionCreators.uploadSpreadSheet(formdata)),

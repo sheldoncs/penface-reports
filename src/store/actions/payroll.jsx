@@ -106,3 +106,20 @@ export const buildSpreadSheet = (payEndDate) => {
       });
   };
 };
+export const processFSSUReport = (payEndDate) => {
+  return (dispatch) => {
+    dispatch(buildStart());
+    const params = { dteStr: payEndDate };
+    let url = "http://localhost:49607/Payroll.asmx/getFSSUData";
+    axios
+      .post(url, params)
+      .then((response) => {
+        console.log(response);
+        dispatch(buildSuccess(response.data.d));
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(buildFailed("failure"));
+      });
+  };
+};

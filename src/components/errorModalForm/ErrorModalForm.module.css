@@ -1,0 +1,34 @@
+.ErrorModalForm {
+    position:absolute;
+    flex-direction: column;
+    width:300px;
+    top:0px;
+    left:0;
+    right:0;
+    margin:25px auto;
+    border:1px solid #ccc;
+    z-index:10;
+    background-color: #fff;
+    height:200px;
+    font-family: 'Blinker', sans-serif;
+}
+.Title{
+    width:300px!important;
+    height:50px;
+    background-color: red;
+    color:#fff;
+    padding-top: 10px;
+    padding-left:15px;
+}
+.Button{
+    width:60px;
+    display:block;
+    margin:25px auto;
+    z-index:10;
+}
+.Body {
+    display:flex;
+    width:150px;
+    margin:40px auto;
+    background-color: #fff;
+}
