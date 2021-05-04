@@ -4,9 +4,9 @@ import classes from "./ErrorModalForm.module.css";
 const ErrorModalForm = React.memo((props) => {
   const { errorMessage } = props;
   const [error, setError] = useState("");
-  console.log("errorMessage", errorMessage);
+
   useEffect(() => {
-    setError(errorMessage);
+    setError(props.errorMessage);
   }, [error, errorMessage]);
 
   return (

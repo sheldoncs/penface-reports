@@ -78,7 +78,7 @@ const fssu = (props) => {
       ) : null}
       {props.buildState === "failure" ? (
         <div>
-          <Cover show={true} />
+          <Cover show={props.showCover} />
           <ErrorModal closeErrorModal={props.closeErrorModal}>
             FSSU Error
           </ErrorModal>

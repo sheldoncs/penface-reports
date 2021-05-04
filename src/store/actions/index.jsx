@@ -8,4 +8,7 @@ export {
   processSpreadSheet,
   processFinalReport,
   processFSSUReport,
+  processBannerJournal,
+  authenticateUser,
+  authResult,
 } from "./payroll";

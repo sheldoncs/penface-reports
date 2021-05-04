@@ -7,6 +7,7 @@ import * as actionCreators from "../../store/actions/index";
 import classes from "./Payroll.module.css";
 import Cover from "../../components/cover/cover";
 import FSSU from "../../components/FSSU/fssu";
+import BannerJournal from "../../components/bannerjournal/bannerJournal";
 
 class Payroll extends Component {
   state = {
@@ -108,6 +109,7 @@ class Payroll extends Component {
     buildStart: false,
     myref: null,
     fssuOption: "email",
+    bannerJournalOption: "email",
     disableFSSUReport: true,
     disableBannerJournalReport: true,
     errorMessage: null,
@@ -211,18 +213,37 @@ class Payroll extends Component {
     this.setState({ ...tempState, option: val });
   };
   closeErrorModalHandler = () => {
-    this.setState({ buildState: "" });
+    this.setState({ buildState: "", openCover: false });
   };
   fssuHandler = (val) => {
     let tempState = { ...this.state };
     this.setState({ ...tempState, fssuOption: val });
   };
+  bannerJournalHandler = (val) => {
+    let tempState = { ...this.state };
+    this.setState({ ...tempState, bannerJournalOption: val });
+  };
+  processBannerJournalHandler = () => {
+    let tempState = { ...this.state };
+    this.setState({ buildStart: true, openCover: true });
+    this.props.onProcessBannerJournal(
+      tempState.penfaceForm.inputs["email"].value,
+      tempState.penfaceForm.inputs["payenddate"].value
+    );
+    this.state.myVar = setInterval(() => {
+      this.checkBuild("banner");
+    }, 5000);
+  };
   processFSSUHandler = () => {
     let tempState = { ...this.state };
     this.setState({ buildStart: true, openCover: true });
-    this.onProcessFSSUReport(tempState.penfaceForm.inputs.payenddate.value);
+
+    this.props.onProcessFSSUReport(
+      tempState.penfaceForm.inputs.email.value,
+      tempState.penfaceForm.inputs.payenddate.value
+    );
     this.state.myVar = setInterval(() => {
-      this.checkBuild("last");
+      this.checkBuild("fssu");
     }, 5000);
   };
   setFileInput = (r) => {
@@ -269,7 +290,10 @@ class Payroll extends Component {
   buildSpreadSheet = () => {
     let tempState = { ...this.state };
 
-    this.props.onBuildSheet(this.state.penfaceForm.inputs.payenddate.value);
+    this.props.onBuildSheet(
+      this.state.penfaceForm.inputs.email.value,
+      this.state.penfaceForm.inputs.payenddate.value
+    );
     this.setState({ buildStart: true, openCover: true });
     this.state.myVar = setInterval(() => {
       this.checkBuild("emailFile");
@@ -285,11 +309,14 @@ class Payroll extends Component {
     if (this.props.success === "failure") {
       console.log(this.props.success);
       tempState.buildState = "failure";
+      tempState.buildStart = false;
       tempState.errorMessage = "Network Service Issue!";
       this.props.onBuildFailed("failure");
       this.stopInterval(tempState);
     }
     if (this.props.success === "success") {
+      tempState.buildStart = false;
+      tempState.openCover = false;
       this.stopInterval(tempState);
     }
   };
@@ -348,13 +375,14 @@ class Payroll extends Component {
         tempState.disableFinalReport = true;
         tempState.disableSend = true;
         tempState.disableProcess = true;
+      } else if (tempState.nextProcess == "fssu") {
+        tempState.disableFSSUReport = true;
       }
     }
     clearInterval(this.state.myVar);
     this.setState({
       openCover: false,
       buildStart: false,
-      disableFSSUReport: true,
       ...tempState,
     });
   };
@@ -362,7 +390,7 @@ class Payroll extends Component {
   render() {
     return (
       <React.Fragment>
-        <Cover show={this.state.openCover} />
+        {this.state.openCover ? <Cover show={this.state.openCover} /> : null}
         <div className={classes.CenterSpinner}>
           {this.state.buildStart === true ? <Spinner /> : null}
         </div>
@@ -398,12 +426,28 @@ class Payroll extends Component {
               fssuOption={this.state.fssuOption}
               penfaceForm={this.state.penfaceForm}
               clicked={this.fssuHandler}
+              showCover={this.state.showCover}
               processClick={this.processFSSUHandler}
               disabled={this.state.disableFSSUReport}
               inputChangeHandler={this.changeHandler}
               reports={this.state.reports}
               buildState={this.state.buildState}
               closeErrorModal={this.closeErrorModalHandler}
+              errorMessage={this.state.errorMessage}
+            />
+          ) : this.state.reports === "bannerJournalRadio" ? (
+            <BannerJournal
+              penfaceForm={this.state.penfaceForm}
+              clicked={this.bannerJournalHandler}
+              inputChangeHandler={this.changeHandler}
+              openCover={this.props.openCover}
+              disabled={this.state.disableBannerJournalReport}
+              bannerJournalOption={this.state.bannerJournalOption}
+              closeErrorModal={this.closeErrorModalHandler}
+              processClick={this.processBannerJournalHandler}
+              closeErrorModal={this.closeErrorModalHandler}
+              buildState={this.state.buildState}
+              errorMessage={this.state.errorMessage}
             />
           ) : null}
         </div>
@@ -414,22 +458,24 @@ class Payroll extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    success: state.success,
+    success: state.sheet.success,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
+    onProcessBannerJournal: (dateStr, email) =>
+      dispatch(actionCreators.processBannerJournal(dateStr, email)),
     onProcessFinalReport: (email, dateStr) =>
       dispatch(actionCreators.processFinalReport(email, dateStr)),
-    onProcessFSSUReport: (dateStr) =>
-      dispatch(actionCreators.processFSSUReport(dateStr)),
+    onProcessFSSUReport: (email, dateStr) =>
+      dispatch(actionCreators.processFSSUReport(email, dateStr)),
     onProcessSheet: () => dispatch(actionCreators.processSpreadSheet()),
     onUploadSheet: (formdata) =>
       dispatch(actionCreators.uploadSpreadSheet(formdata)),
     onBuildStart: () => dispatch(actionCreators.buildStart()),
     onEmailSheet: (email) => dispatch(actionCreators.emailSpreadSheet(email)),
-    onBuildSheet: (dateStr) =>
-      dispatch(actionCreators.buildSpreadSheet(dateStr)),
+    onBuildSheet: (email, dateStr) =>
+      dispatch(actionCreators.buildSpreadSheet(email, dateStr)),
     onBuildFailed: (result) => dispatch(actionCreators.buildFailed(result)),
   };
 };

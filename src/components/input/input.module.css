@@ -44,6 +44,7 @@
   background-color: #fff !important;
   font-family: "Abel", sans-serif !important;
   width: 200px !important;
+ 
 }
 
 .dispImage {
@@ -75,11 +76,11 @@
   border: 1px solid #ccc;
   background-color: #fff;
   font-family: 'Blinker', sans-serif;
-  padding-top: 70px;
+  height:35px;
   display: block;
   width: 200px !important;
   box-sizing: border-box;
-  margin: 20px auto;
+  margin: 17px auto;
   color: #000 !important;
 }
 select {
@@ -102,12 +103,15 @@ select {
 input {
   border:0px !important;
   width:250px !important;
+  height:35px !important;
   font-family: 'Blinker', sans-serif !important;
+  background:#ccc;
 }
 
 textarea:focus, input:focus{
   outline: none;
   box-shadow: 0 0 10px #fff !important;
+  background-color: #fff!important;
 }
 .inputfile {
 	width: 0.1px;

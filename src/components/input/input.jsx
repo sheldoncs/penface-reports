@@ -27,17 +27,19 @@ const Input = (props) => {
   }
   switch (props.elementType) {
     case "input":
-      if (props.elementName != "password") {
+      if (props.elementName !== "Password") {
         inputElement = (
           <div className="input-container">
             <input
+              autoFocus
+              onFocus={props.handleFocus}
               onChange={props.changed}
               className={inputClasses.join(" ")}
               {...props.elementConfig}
               value={props.value}
               name={props.elementName}
               id={props.elementName}
-              type={props.visibility}
+              // type={props.visibility}
             />
           </div>
         );
@@ -112,6 +114,21 @@ const Input = (props) => {
           className={inputClasses.join()}
           {...props}
         />
+      );
+      break;
+    case "checkbox":
+      inputElement = (
+        <input
+          onChange={props.changed}
+          className={inputClasses.join(" ")}
+          {...props.elementConfig}
+          value={props.value}
+          name={props.elementName}
+          id={props.elementName}
+          checked={props.checked}
+        >
+          {props.value}
+        </input>
       );
       break;
     case "select":

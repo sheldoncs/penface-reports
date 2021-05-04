@@ -1,0 +1,38 @@
+.Login {
+    background-color: #fff;
+    color:#000;
+    font-family: 'Blinker', sans-serif;
+    display:block;
+    margin:auto;
+    font-size: 15px;
+    border:1px #ccc solid;
+    border-radius:5px;
+    width:310px;
+    height:80px;
+    margin:20px;
+}
+.Title{
+    font-family: 'Blinker', sans-serif;
+    font-size: 25px;
+    padding-left:10px;
+    margin:auto;
+    width:190px;
+    font-weight: bold;
+    color:#2F96D8;
+}
+.Container{
+    display:block;
+    margin:100px auto;
+    width:355px;
+    border:2px solid #2F96D8;
+    border-radius:20px;
+    height:340px;
+}
+.Button{
+    width:310px;
+    height:45px;
+    font-family: 'Blinker', sans-serif;
+    font-size: 20px;
+    margin:auto;
+    
+}

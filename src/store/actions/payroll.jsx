@@ -4,6 +4,9 @@ import axios from "axios";
 export const spreadsheetCompleted = (success) => {
   return { type: actionTypes.BUILD_SPREADSHEET, success };
 };
+export const authResult = (result) => {
+  return { type: actionTypes.AUTHENTICATE_USER, result: result };
+};
 export const buildStart = () => {
   return { type: actionTypes.BUILD_START };
 };
@@ -19,11 +22,29 @@ export const buildFailed = (result) => {
 export const buildSuccess = (result) => {
   return { type: actionTypes.BUILD_SUCCESS, success: result };
 };
+export const authenticateUser = (username, password) => {
+  return (dispatch) => {
+    dispatch(processStart());
+    const params = { username: username, password: password };
+    let url = "http://owl2/penface/Payroll.asmx/isAuthenticated";
+    axios
+      .post(url, params)
+      .then((response) => {
+        console.log("called successfully");
+        dispatch(buildSuccess("success"));
+        dispatch(authResult(response.data.d));
+      })
+      .catch((err) => {
+        console.log(err);
+        dispatch(buildFailed("failure"));
+      });
+  };
+};
 export const processFinalReport = (email, payEndDate) => {
   return (dispatch) => {
     dispatch(processStart());
     const params = { email: email, dteStr: payEndDate };
-    let url = "http://localhost:49607/Payroll.asmx/FinancialDataExport";
+    let url = "http://owl2/penface/Payroll.asmx/FinancialDataExport";
     axios
       .post(url, params)
       .then((response) => {
@@ -40,7 +61,9 @@ export const processSpreadSheet = () => {
   return (dispatch) => {
     dispatch(processStart());
     let url =
-      "http://localhost:49607/Payroll.asmx/ExecutePenfaceFinanceDataProcess";
+      "http://owl2/penface/Payroll.asmx/ExecutePenfaceFinanceDataProcess";
+    // let url =
+    //   "http://localhost:49607/Payroll.asmx/ExecutePenfaceFinanceDataProcess";
     axios
       .post(url)
       .then((response) => {
@@ -56,7 +79,7 @@ export const processSpreadSheet = () => {
 export const uploadSpreadSheet = (formdata) => {
   return (dispatch) => {
     dispatch(buildStart());
-    let url = "http://localhost:49607/services/spreadsheet.ashx";
+    let url = "http://owl2/penface/services/spreadsheet.ashx";
     axios
       .post(url, formdata)
       .then((response) => {
@@ -73,7 +96,7 @@ export const emailSpreadSheet = (email) => {
   return (dispatch) => {
     dispatch(buildStart());
     const params = { email: email };
-    let url = "http://localhost:49607/Payroll.asmx/emailPenfaceSheet";
+    let url = "http://owl2/penface/Payroll.asmx/emailPenfaceSheet";
     axios
       .post(url, params)
       .then((response) => {
@@ -86,13 +109,13 @@ export const emailSpreadSheet = (email) => {
       });
   };
 };
-export const buildSpreadSheet = (payEndDate) => {
+export const buildSpreadSheet = (email, payEndDate) => {
   return (dispatch) => {
     dispatch(buildStart());
-    const params = { dteStr: payEndDate };
+    const params = { email: email, dteStr: payEndDate };
 
     let url =
-      "http://localhost:49607/Payroll.asmx/ExecutePenfaceFinanceSpreadsheetProcess";
+      "http://owl2/penface/Payroll.asmx/ExecutePenfaceFinanceSpreadsheetProcess";
 
     axios
       .post(url, params)
@@ -106,19 +129,42 @@ export const buildSpreadSheet = (payEndDate) => {
       });
   };
 };
-export const processFSSUReport = (payEndDate) => {
+export const processBannerJournal = (email, payEndDate) => {
   return (dispatch) => {
     dispatch(buildStart());
-    const params = { dteStr: payEndDate };
-    let url = "http://localhost:49607/Payroll.asmx/getFSSUData";
+    const params = { dteStr: payEndDate, email: email };
+
+    let url = "http://owl2/penface/Payroll.asmx/ExecuteBannerJournal";
     axios
       .post(url, params)
       .then((response) => {
-        console.log(response);
-        dispatch(buildSuccess(response.data.d));
+        dispatch(buildSuccess("success"));
       })
       .catch((err) => {
         console.log(err);
+        dispatch(buildFailed("failure"));
+      });
+  };
+};
+export const processFSSUReport = (email, payEndDate) => {
+  return (dispatch) => {
+    dispatch(buildStart());
+
+    const params = { email: email, dte: payEndDate };
+    let url = "http://owl2/penface/Payroll.asmx/getFSSUData";
+    // let url = "http://localhost:49607/Payroll.asmx/getFSSUData";
+
+    axios
+      .post(url, params)
+      .then((response) => {
+        console.log("response.data.d", response.data.d);
+        if (response.data.d.indexOf("failure") >= 0) {
+          dispatch(buildFailed("failure"));
+        } else {
+          dispatch(buildSuccess(response.data.d));
+        }
+      })
+      .catch((err) => {
         dispatch(buildFailed("failure"));
       });
   };
