@@ -1,7 +1,7 @@
 import * as actionTypes from "./actions/actionTypes";
 
 const AUTH_RESULT = "AUTH_RESULT";
-const initialState = {};
+const initialState = { result: false };
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
