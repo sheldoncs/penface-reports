@@ -7,6 +7,9 @@
     margin:30px auto;
     
 }
+.Logout {
+    display:block;
+}
 .CenterSpinner{
     width:100px;
     margin:70px auto;
