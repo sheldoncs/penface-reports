@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export const LoginContext = React.createContext({
   isAuth: false,
   login: () => {},
-  resetLogin: () => {},
+  logout: () => {},
 });
 
 const LoginContextProvider = (props) => {
@@ -11,14 +11,15 @@ const LoginContextProvider = (props) => {
   const loginHandler = () => {
     setIsAuthenticated(true);
   };
-  const resetLoginHandler = () => {
+  const logoutHandler = () => {
     setIsAuthenticated(false);
   };
+
   return (
     <LoginContext.Provider
       value={{
         login: loginHandler,
-        resetLogin: resetLoginHandler,
+        logout: logoutHandler,
         isAuth: isAuthenticated,
       }}
     >

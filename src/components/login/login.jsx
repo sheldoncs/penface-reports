@@ -1,18 +1,27 @@
-import React, { useState, useMemo, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
 import Input from "../input/input";
 import classes from "./Login.module.css";
 import { LoginContext } from "../../context/login-context";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticateUser } from "../../store/actions/index";
+import { useHistory } from "react-router-dom";
 
 const Login = () => {
-  let loginContext = useContext(LoginContext);
+  const history = useHistory();
   const auth = useSelector((state) => state.auth.result);
   const status = useSelector((state) => state.sheet.success);
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
-  const [authInterval, setAuthInterval] = useState(null);
+  const [authValue, setAuthValue] = useState(false);
   const [password, setPassword] = useState("");
+  const [spinner, setSpinner] = useState(false);
+  const [disabled, setDisabled] = useState(true);
   const [loginForm, setLoginForm] = useState({
     username: {
       elementType: "input",
@@ -48,32 +57,35 @@ const Login = () => {
   btnClasses.push("btn");
   btnClasses.push("btn-primary");
 
-  const loginHandler = () => {
+  const loginHandler = useCallback(() => {
     dispatch(authenticateUser(username, password));
-    setAuthInterval(
-      setInterval(() => {
-        console.log("auth", auth, "build", status);
-        if (auth === true) {
-          stopInterval();
-        }
-      }, 2000)
-    );
-  };
+  }, [username, password]);
 
-  const stopInterval = () => {
-    clearInterval(authInterval);
-  };
-  useEffect(() => {
-    if (auth === true) {
-      stopInterval();
-      loginContext.login();
-    }
-  }, [auth]);
+  useEffect(
+    useCallback(() => {
+      let formKeys = Object.keys(loginForm);
+      let valid = true;
+      formKeys.map((field, index) => {
+        valid = loginForm[field].value === "" ? false : true && valid;
+        if (index === 1 && valid) {
+          setDisabled(false);
+        }
+      });
+
+      if (auth) {
+        console.log("auth", auth, "build", status);
+        history.push("/manager");
+      }
+    })
+  );
+
   const changeHandler = (event, fieldName) => {
     event.preventDefault();
-    if (fieldName == "password") {
+    if (fieldName === "Password") {
+      loginForm.password.value = event.target.value;
       setPassword(event.target.value);
-    } else {
+    } else if (fieldName === "Username") {
+      loginForm.username.value = event.target.value;
       setUsername(event.target.value);
     }
   };
@@ -112,9 +124,15 @@ const Login = () => {
         <form>
           <div>{setupForm}</div>
           <div style={{ marginLeft: "20px" }}>
-            <div onClick={loginHandler} className={btnClasses.join(" ")}>
+            <button
+              disabled={disabled}
+              type="button"
+              onClick={loginHandler}
+              className="btn btn-primary"
+              // className={btnClasses.join(" ")}
+            >
               {"LOGIN"}
-            </div>
+            </button>
           </div>
         </form>
       </div>

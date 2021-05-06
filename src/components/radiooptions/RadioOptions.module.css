@@ -1,12 +1,13 @@
 .RadioOptions {
     display: flex;
     flex-direction: row;
-    width:72%;
+    width:88%;
+    border-radius:30px;
     margin:auto;
     margin-top:70px;
     font-family: 'Blinker', sans-serif;
     font-size: 20px;
-    background-color: darkcyan;
+    background-color: #42C0FB;
     color:#fff
 }
 .Lblformats{

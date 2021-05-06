@@ -1,39 +1,13 @@
 .Payroll{
     display:block;
-    border:2px solid #008B8B;
+    border:0px solid #E6E9EB;
     border-radius: 20px;
     width:90%;
     height:500px;
     margin:30px auto;
     
 }
-.IconContainer{
-    display:block;
-    width:70px;
-    height:95px;
-    right:100px;
-    float:right;
-    font-family: 'Blinker', sans-serif;
-    font-size:20px;
-    margin-right:30px;
-    color:#fff;
-    font-weight: bold;
-}
-.Icon {
-    display:block;
-    width:70px;
-    height:70px;
-}
-.Logout {
-    display:block;
-    cursor:pointer;
-    width:90%;
-    height:100px;
-    clear:both;
-    margin:25px auto;
-    background-color: #F0E195;
-    border-radius: 20px;
-}
+
 .CenterSpinner{
     width:100px;
     margin:70px auto;

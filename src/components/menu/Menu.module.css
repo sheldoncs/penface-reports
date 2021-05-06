@@ -1,0 +1,36 @@
+
+.IconContainer{
+    display:inline;
+    width:350px;
+    height:75px;
+    right:100px;
+    float:right;
+    font-family: 'Blinker', sans-serif;
+    font-size:20px;
+    margin-right:30px;
+    color:#fff;
+    font-weight: bold;
+    
+}
+.Icon {
+    display:block;
+    width:70px;
+    height:70px;
+}
+.Menu {
+    display:block;
+    cursor:pointer;
+    width:90%;
+    height:100px;
+    clear:both;
+    margin:25px auto;
+    border-radius: 20px;
+}
+.Button {
+    width:150px!important;
+    border-radius: 20px!important;
+    height:50px;
+    border:2px solid #42C0FC !important;
+    margin:5px;
+
+}

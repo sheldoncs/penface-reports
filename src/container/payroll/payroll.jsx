@@ -8,7 +8,7 @@ import classes from "./Payroll.module.css";
 import Cover from "../../components/cover/cover";
 import FSSU from "../../components/FSSU/fssu";
 import BannerJournal from "../../components/bannerjournal/bannerJournal";
-import Logout from "../../assets/logout.png";
+import Menu from "../../components/menu/menu";
 
 class Payroll extends Component {
   state = {
@@ -387,18 +387,13 @@ class Payroll extends Component {
       ...tempState,
     });
   };
-
+  componentDidMount() {
+    console.log("payroll");
+  }
   render() {
     return (
       <React.Fragment>
-        <div className={classes.Logout}>
-          <div className={classes.IconContainer}>
-            <img src={Logout} className={classes.Icon} />
-            <div className="text-center">
-              <span>Logout</span>
-            </div>
-          </div>
-        </div>
+        <Menu />
         {this.state.openCover ? <Cover show={this.state.openCover} /> : null}
         <div className={classes.CenterSpinner}>
           {this.state.buildStart === true ? <Spinner /> : null}
