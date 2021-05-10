@@ -1,22 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import classes from "./Manager.module.css";
 import iconManager from "../../assets/manager.png";
 import iconLogout from "../../assets/logout.png";
 import { useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authResult } from "../../store/actions/index";
 
 const Manager = (props) => {
   const history = useHistory();
-
+  const dispatch = useDispatch();
+  const confirmed = useSelector((state) => state.auth.confirmed);
   const classFormat = [classes.Button];
   classFormat.push("btn");
   classFormat.push("btn-light");
   const reportHandler = () => {
-    console.log("payroll");
     history.push("/payroll");
   };
   const logoutHandler = () => {
-    history.push("/login");
+    dispatch(authResult(false));
+    history.push("/");
   };
+  useEffect(() => {
+    if (!confirmed) {
+      history.push("/");
+    }
+  });
   return (
     <div className={classes.Manager}>
       <div>

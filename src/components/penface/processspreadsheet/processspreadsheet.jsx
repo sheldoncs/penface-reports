@@ -7,11 +7,10 @@ const processspreadsheet = (props) => {
       <button
         disabled={props.disabled}
         onClick={props.processSheet}
-        className="btn btn-dark"
+        className="btn btn-primary"
       >
         PROCESS SPREADSHEET
       </button>
-      <button className="btn btn-dark">{"NEXT >"}</button>
     </div>
   );
 };

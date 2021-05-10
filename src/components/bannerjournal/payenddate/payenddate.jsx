@@ -26,13 +26,6 @@ const payenddate = (props) => {
           />
         </div>
       </div>
-      <button
-        disabled={props.disableBuild}
-        onClick={props.clicked}
-        className="btn btn-dark"
-      >
-        {"NEXT  >"}
-      </button>
     </div>
   );
 };

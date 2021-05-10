@@ -11,17 +11,18 @@ import { LoginContext } from "../../context/login-context";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticateUser } from "../../store/actions/index";
 import { useHistory } from "react-router-dom";
+import Spin from "../../assets/loading-gif.jpg";
 
 const Login = () => {
   const history = useHistory();
-  const auth = useSelector((state) => state.auth.result);
+  const confirmed = useSelector((state) => state.auth.confirmed);
   const status = useSelector((state) => state.sheet.success);
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
   const [authValue, setAuthValue] = useState(false);
   const [password, setPassword] = useState("");
   const [spinner, setSpinner] = useState(false);
-  const [disabled, setDisabled] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [loginForm, setLoginForm] = useState({
     username: {
       elementType: "input",
@@ -57,8 +58,12 @@ const Login = () => {
   btnClasses.push("btn");
   btnClasses.push("btn-primary");
 
-  const loginHandler = useCallback(() => {
-    dispatch(authenticateUser(username, password));
+  const loginHandler = useCallback(async () => {
+    setSpinner(true);
+    setLoading(true);
+    setTimeout(() => {
+      dispatch(authenticateUser(username, password));
+    }, 7000);
   }, [username, password]);
 
   useEffect(
@@ -68,12 +73,17 @@ const Login = () => {
       formKeys.map((field, index) => {
         valid = loginForm[field].value === "" ? false : true && valid;
         if (index === 1 && valid) {
-          setDisabled(false);
+          if (!confirmed) {
+            if (!spinner) {
+              setLoading(false);
+            }
+            console.log("loading", loading);
+          }
         }
       });
 
-      if (auth) {
-        console.log("auth", auth, "build", status);
+      if (confirmed) {
+        console.log("auth", confirmed, "build", status);
         history.push("/manager");
       }
     })
@@ -125,14 +135,17 @@ const Login = () => {
           <div>{setupForm}</div>
           <div style={{ marginLeft: "20px" }}>
             <button
-              disabled={disabled}
+              disabled={loading}
               type="button"
               onClick={loginHandler}
               className="btn btn-primary"
-              // className={btnClasses.join(" ")}
             >
               {"LOGIN"}
             </button>
+          </div>
+
+          <div className="text-center">
+            {spinner && <img src={Spin} className={classes.Loading} />}
           </div>
         </form>
       </div>

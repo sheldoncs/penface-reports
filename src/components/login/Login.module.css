@@ -34,5 +34,9 @@
     font-family: 'Blinker', sans-serif;
     font-size: 20px;
     margin:auto;
-    
+}
+.Loading{
+    width:170px;
+    height:140px;
+    margin:25px auto;
 }

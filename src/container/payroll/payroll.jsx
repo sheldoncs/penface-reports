@@ -49,6 +49,7 @@ class Payroll extends Component {
           visibility: "visible",
           elemConfig: { type: "date", placeholder: "date" },
           value: "",
+          originalValue: "",
           name: "payenddate",
           validation: {
             required: true,
@@ -207,6 +208,10 @@ class Payroll extends Component {
   componentDidMount() {
     let tempState = { ...this.state };
     this.setState({ ...tempState });
+    if (!this.props.confirmed) {
+      console.log("confirmed", this.props.confirmed);
+      this.props.history.push("/");
+    }
   }
   penfaceHandler = (val) => {
     let tempState = { ...this.state };
@@ -262,9 +267,12 @@ class Payroll extends Component {
       tempState.inputs[key].valid = isValid;
       if (isValid) {
         tempState.inputs[key].value =
-          key == "payenddate"
+          key === "payenddate"
             ? this.formattedDate(event.target.value)
             : event.target.value;
+        if (key === "payenddate") {
+          tempState.inputs[key].originalValue = event.target.value;
+        }
         this.setState({ ...tempState, disableBuild: false });
       }
     } else if (key.indexOf("Radio") >= 0) {
@@ -354,7 +362,7 @@ class Payroll extends Component {
   };
   stopInterval = (tempState) => {
     if (tempState.buildState == "success") {
-      if (tempState.nextProcess == "sendFile") {
+      if (tempState.nextProcess == "emailFile") {
         tempState.disableSend = false;
       } else if (tempState.nextProcess == "processSheet") {
         tempState.disableProcess = false;
@@ -366,7 +374,7 @@ class Payroll extends Component {
         tempState.disableProcess = false;
       }
     } else if (tempState.buildState == "failure") {
-      if (tempState.nextProcess == "sendFile") {
+      if (tempState.nextProcess == "emailFile") {
         tempState.disableSend = true;
       } else if (tempState.nextProcess == "processSheet") {
         tempState.disableProcess = true;
@@ -387,9 +395,7 @@ class Payroll extends Component {
       ...tempState,
     });
   };
-  componentDidMount() {
-    console.log("payroll");
-  }
+
   render() {
     return (
       <React.Fragment>
@@ -463,6 +469,7 @@ class Payroll extends Component {
 const mapStateToProps = (state) => {
   return {
     success: state.sheet.success,
+    confirmed: state.auth.confirmed,
   };
 };
 const mapDispatchToProps = (dispatch) => {

@@ -24,9 +24,7 @@ const penfaceupload = (props) => {
             />
           </div>
         </form>
-        <div>
-          <button className="btn btn-dark">{"NEXT >"}</button>
-        </div>
+        <div></div>
       </div>
     </div>
   );

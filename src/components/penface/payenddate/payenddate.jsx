@@ -23,13 +23,14 @@ const payenddate = (props) => {
             elementConfig={props.penfaceForm["payenddate"].elemConfig}
             elementName={"payenddate"}
             valid={props.penfaceForm["payenddate"].valid}
+            value={props.penfaceForm["payenddate"].originalValue}
           />
         </div>
       </div>
       <button
         disabled={props.disableBuild}
         onClick={props.clicked}
-        className="btn btn-dark"
+        className="btn btn-info"
       >
         BUILD SPREADSHEET
       </button>

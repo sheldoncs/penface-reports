@@ -7,8 +7,9 @@
     margin-top:70px;
     font-family: 'Blinker', sans-serif;
     font-size: 20px;
-    background-color: #42C0FB;
-    color:#fff
+    background-color: #000;
+    color:#fff;
+    border:10px solid #fff;
 }
 .Lblformats{
     display: flex;

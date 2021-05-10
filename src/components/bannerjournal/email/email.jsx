@@ -4,7 +4,6 @@ import classes from "./Email.module.css";
 
 const email = (props) => {
   return (
-    
     <div className={classes.Container}>
       <div className={classes.Email}>
         <div
@@ -28,7 +27,6 @@ const email = (props) => {
           />
         </div>
       </div>
-      <button className="btn btn-dark">{"NEXT >"}</button>
     </div>
   );
 };

@@ -8,7 +8,7 @@ const finalreport = (props) => {
       <button
         disabled={props.disabled}
         onClick={props.processFinalReport}
-        className="btn btn-dark"
+        className="btn btn-primary"
       >
         PROCESS FINAL REPORT
       </button>

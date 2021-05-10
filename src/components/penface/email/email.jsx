@@ -27,7 +27,7 @@ const email = (props) => {
           />
         </div>
       </div>
-      <button className="btn btn-dark">{"NEXT >"}</button>
+      {/* <button className="btn btn-dark">{"NEXT >"}</button> */}
     </div>
   );
 };

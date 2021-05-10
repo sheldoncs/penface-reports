@@ -7,11 +7,10 @@ const emailspreadsheet = (props) => {
       <button
         disabled={props.disabled}
         onClick={props.emailSheet}
-        className="btn btn-dark"
+        className="btn btn-primary"
       >
         EMAIL SPREADSHEET
       </button>
-      <button className="btn btn-dark">{"NEXT >"}</button>
     </div>
   );
 };
