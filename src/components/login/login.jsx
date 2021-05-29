@@ -11,7 +11,9 @@ import { LoginContext } from "../../context/login-context";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticateUser } from "../../store/actions/index";
 import { useHistory } from "react-router-dom";
+import ErrorModal from "../errorModalForm/errorModalForm";
 import Spin from "../../assets/loading-gif.jpg";
+import Cover from "../cover/cover";
 
 const Login = () => {
   const history = useHistory();
@@ -19,10 +21,16 @@ const Login = () => {
   const status = useSelector((state) => state.sheet.success);
   const dispatch = useDispatch();
   const [username, setUsername] = useState("");
-  const [authValue, setAuthValue] = useState(false);
   const [password, setPassword] = useState("");
   const [spinner, setSpinner] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showError, setShowError] = useState(false);
+  const [closeErrorModal, setCloseErrorModal] = useState({
+    buildState: "",
+    openCover: false,
+  });
+  const [errorMessage, setErrorMessage] = useState("Incorrect Login!");
+  const [buildState, setBuildState] = useState("failure");
   const [loginForm, setLoginForm] = useState({
     username: {
       elementType: "input",
@@ -53,7 +61,7 @@ const Login = () => {
       exist: false,
     },
   });
-
+  let timer = null;
   let btnClasses = [classes.Button];
   btnClasses.push("btn");
   btnClasses.push("btn-primary");
@@ -61,10 +69,19 @@ const Login = () => {
   const loginHandler = useCallback(async () => {
     setSpinner(true);
     setLoading(true);
-    setTimeout(() => {
-      dispatch(authenticateUser(username, password));
-    }, 7000);
+
+    dispatch(authenticateUser(username, password));
+    timer = setTimeout(() => {
+      if (!confirmed) {
+        setShowError(true);
+        setLoading(false);
+      }
+    }, 5000);
   }, [username, password]);
+
+  useEffect(() => {
+    return () => clearTimeout(timer);
+  }, [timer]);
 
   useEffect(
     useCallback(() => {
@@ -77,7 +94,6 @@ const Login = () => {
             if (!spinner) {
               setLoading(false);
             }
-            console.log("loading", loading);
           }
         }
       });
@@ -98,6 +114,12 @@ const Login = () => {
       loginForm.username.value = event.target.value;
       setUsername(event.target.value);
     }
+  };
+  const closeErrorModalHandler = () => {
+    setShowError(false);
+    setLoading(false);
+    setSpinner(false);
+    setCloseErrorModal({ buildState: "", openCover: false });
   };
   const handleFocus = (e) => {};
   const setupForm = useMemo(() => {
@@ -138,7 +160,7 @@ const Login = () => {
               disabled={loading}
               type="button"
               onClick={loginHandler}
-              className="btn btn-primary"
+              className="btn btn-primary btn-login"
             >
               {"LOGIN"}
             </button>
@@ -146,6 +168,20 @@ const Login = () => {
 
           <div className="text-center">
             {spinner && <img src={Spin} className={classes.Loading} />}
+          </div>
+          <div>
+            <div>
+              {showError && <Cover show={showError} />}
+              {showError && (
+                <ErrorModal
+                  closeErrorModal={closeErrorModalHandler}
+                  errorMessage={errorMessage}
+                  buildState={buildState}
+                >
+                  Penface Error
+                </ErrorModal>
+              )}
+            </div>
           </div>
         </form>
       </div>

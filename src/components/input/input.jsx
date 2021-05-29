@@ -36,7 +36,7 @@ const Input = (props) => {
               onChange={props.changed}
               className={inputClasses.join(" ")}
               {...props.elementConfig}
-              value={props.value}
+              // value={props.value}
               name={props.elementName}
               id={props.elementName}
               // type={props.visibility}
@@ -49,7 +49,7 @@ const Input = (props) => {
             onChange={props.changed}
             className={inputClasses.join(" ")}
             {...props.elementConfig}
-            value={props.value}
+            // value={props.value}
             name={props.elementName}
             id={props.elementName}
           />

@@ -53,7 +53,8 @@ class Payroll extends Component {
           name: "payenddate",
           validation: {
             required: true,
-            regExpression: /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/,
+            regExpression:
+              /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/,
           },
           valid: false,
           touched: false,
@@ -142,28 +143,40 @@ class Payroll extends Component {
   onFileUpload = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log(e.target.files[0]);
 
-    // Create an object of formData
+    let targetFile = e.target.files[0];
     let tempState = { ...this.state };
-    tempState.penfaceForm.inputs["penfacefile"].selectedFile =
-      e.target.files[0];
 
-    const formData = new FormData();
+    if (targetFile.name === "PenfaceFinancedata.csv") {
+      // Create an object of formData
 
-    // Update the formData object
-    formData.append(
-      "penfacefile",
-      tempState.penfaceForm.inputs["penfacefile"].selectedFile,
-      tempState.penfaceForm.inputs["penfacefile"].selectedFile.name
-    );
-    tempState.penfaceForm.inputs["penfacefile"].message =
-      tempState.penfaceForm.inputs["penfacefile"].selectedFile.name;
-    this.props.onUploadSheet(formData);
-    this.setState({ buildStart: true, openCover: true });
-    this.state.myVar = setInterval(() => {
-      this.checkBuild("processSheet");
-    }, 5000);
+      tempState.penfaceForm.inputs["penfacefile"].selectedFile =
+        e.target.files[0];
+
+      const formData = new FormData();
+
+      // Update the formData object
+      formData.append(
+        "penfacefile",
+        tempState.penfaceForm.inputs["penfacefile"].selectedFile,
+        tempState.penfaceForm.inputs["penfacefile"].selectedFile.name
+      );
+      tempState.penfaceForm.inputs["penfacefile"].message =
+        tempState.penfaceForm.inputs["penfacefile"].selectedFile.name;
+      this.props.onUploadSheet(formData);
+      this.setState({ buildStart: true, openCover: true });
+      this.state.myVar = setInterval(() => {
+        this.checkBuild("processSheet");
+      }, 5000);
+    } else {
+      this.setState({
+        ...tempState,
+        buildState: "failure",
+        openCover: true,
+        reports: "penfaceRadio",
+        errorMessage: "File Name Should be PenfaceFinancedata!",
+      });
+    }
   };
   handleFiles() {
     const fileList = this.files; /* now you can work with the file list */
@@ -358,6 +371,14 @@ class Payroll extends Component {
       this.state.myVar = setInterval(() => {
         this.checkBuild("last");
       }, 5000);
+    } else {
+      this.setState({
+        ...tempState,
+        buildState: "failure",
+        openCover: true,
+        reports: "penfaceRadio",
+        errorMessage: "Both email and date must have values!",
+      });
     }
   };
   stopInterval = (tempState) => {

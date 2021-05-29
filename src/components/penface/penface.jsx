@@ -12,7 +12,7 @@ import Cover from "../cover/cover";
 const penface = (props) => {
   let addSheet = true;
   let title = "ENTER EMAIL";
-
+  console.log("props.buildState", props.buildState);
   return (
     <React.Fragment>
       <div className={classes.Penface}>
@@ -144,7 +144,7 @@ const penface = (props) => {
           processSheet={() => props.processSheet()}
         />
       ) : null}
-      {props.selectedOption == "finalreport" ? (
+      {props.selectedOption === "finalreport" ? (
         <FinalReport
           disabled={props.disableFinalReport}
           processFinalReport={() => props.processFinalReport()}

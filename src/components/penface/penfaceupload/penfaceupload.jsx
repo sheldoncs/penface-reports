@@ -4,6 +4,10 @@ import classes from "./PenfaceUpload.module.css";
 import UploadFile from "../../../assets/upload.png";
 
 const penfaceupload = (props) => {
+  console.log(
+    "props.penfaceForm['penfacefile'].value",
+    props.penfaceForm["penfacefile"].value
+  );
   return (
     <div className={classes.Container}>
       <div className={classes.Penface}>

@@ -1,10 +1,14 @@
 import * as actionTypes from "./actionTypes";
 import axios from "axios";
 
+const abortController = new AbortController();
+const signal = abortController.signal;
+
 export const spreadsheetCompleted = (success) => {
   return { type: actionTypes.BUILD_SPREADSHEET, success };
 };
 export const authResult = (result) => {
+  abortController.abort();
   return { type: actionTypes.AUTHENTICATE_USER, result: result };
 };
 export const buildStart = () => {
@@ -28,11 +32,12 @@ export const authenticateUser = (username, password) => {
     const params = { username: username, password: password };
     let url = "http://owl2/penface/Payroll.asmx/isAuthenticated";
     axios
-      .post(url, params)
+      .post(url, params, { signal: signal })
       .then((response) => {
         console.log("called successfully");
         dispatch(buildSuccess("success"));
         dispatch(authResult(response.data.d));
+        console.log("response.data.d", response.data.d);
       })
       .catch((err) => {
         console.log(err);
@@ -152,7 +157,6 @@ export const processFSSUReport = (email, payEndDate) => {
 
     const params = { email: email, dte: payEndDate };
     let url = "http://owl2/penface/Payroll.asmx/getFSSUData";
-    // let url = "http://localhost:49607/Payroll.asmx/getFSSUData";
 
     axios
       .post(url, params)
