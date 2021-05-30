@@ -2,14 +2,18 @@
     display:block;
     width:370px;
     height:250px;
-    margin:200px auto;
-    border:2px solid #42C0FC;
+    margin:70px auto;
+    border:2px solid #398E3D!important;;
     padding:26px;
     border-radius: 25px;
 }
-
+.Penface {
+    width:225px;
+    margin:20px auto;
+   
+}
 .Button {
-    border:2px solid #42C0FC !important;
+    border:2px solid #398E3D!important;;
     font-family: 'Blinker', sans-serif;
     font-size:20px;
     margin:35px auto;

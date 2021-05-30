@@ -14,7 +14,7 @@ import { useHistory } from "react-router-dom";
 import ErrorModal from "../errorModalForm/errorModalForm";
 import Spin from "../../assets/loading-gif.jpg";
 import Cover from "../cover/cover";
-
+import Penface from "../../assets/penface.png";
 const Login = () => {
   const history = useHistory();
   const confirmed = useSelector((state) => state.auth.confirmed);
@@ -25,6 +25,13 @@ const Login = () => {
   const [spinner, setSpinner] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showError, setShowError] = useState(false);
+  const [btnClasses, setBtnClasses] = useState([
+    classes.Button,
+    "btn",
+    "btn-success",
+    "btn-login",
+  ]);
+
   const [closeErrorModal, setCloseErrorModal] = useState({
     buildState: "",
     openCover: false,
@@ -62,9 +69,6 @@ const Login = () => {
     },
   });
   let timer = null;
-  let btnClasses = [classes.Button];
-  btnClasses.push("btn");
-  btnClasses.push("btn-primary");
 
   const loginHandler = useCallback(async () => {
     setSpinner(true);
@@ -127,9 +131,7 @@ const Login = () => {
     let fields = formKeys.map((value, index) => {
       return (
         <div className={classes.Login} key={index}>
-          <div style={{ paddingLeft: "10px", fontWeight: "bold" }}>
-            {loginForm[value].elementName}
-          </div>
+          <div className={classes.Label}>{loginForm[value].elementName}</div>
           <Input
             defaultFocus={
               loginForm[value].elementName === "Username" ? true : false
@@ -150,42 +152,47 @@ const Login = () => {
   }, []);
 
   return (
-    <div className={classes.Container}>
-      <div className={classes.Title}>PENFACE LOGIN</div>
-      <div>
-        <form>
-          <div>{setupForm}</div>
-          <div style={{ marginLeft: "20px" }}>
-            <button
-              disabled={loading}
-              type="button"
-              onClick={loginHandler}
-              className="btn btn-primary btn-login"
-            >
-              {"LOGIN"}
-            </button>
-          </div>
-
-          <div className="text-center">
-            {spinner && <img src={Spin} className={classes.Loading} />}
-          </div>
-          <div>
-            <div>
-              {showError && <Cover show={showError} />}
-              {showError && (
-                <ErrorModal
-                  closeErrorModal={closeErrorModalHandler}
-                  errorMessage={errorMessage}
-                  buildState={buildState}
-                >
-                  Penface Error
-                </ErrorModal>
-              )}
-            </div>
-          </div>
-        </form>
+    <React.Fragment>
+      <div className={classes.Penface}>
+        <img src={Penface}></img>
       </div>
-    </div>
+      <div className={classes.Container}>
+        <div className={classes.Title}>PENFACE LOGIN</div>
+        <div>
+          <form>
+            <div>{setupForm}</div>
+            <div style={{ marginLeft: "20px" }}>
+              <button
+                disabled={loading}
+                type="button"
+                onClick={loginHandler}
+                className={btnClasses.join(" ")}
+              >
+                {"LOGIN"}
+              </button>
+            </div>
+
+            <div className="text-center">
+              {spinner && <img src={Spin} className={classes.Loading} />}
+            </div>
+            <div>
+              <div>
+                {showError && <Cover show={showError} />}
+                {showError && (
+                  <ErrorModal
+                    closeErrorModal={closeErrorModalHandler}
+                    errorMessage={errorMessage}
+                    buildState={buildState}
+                  >
+                    Penface Error
+                  </ErrorModal>
+                )}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </React.Fragment>
   );
 };
 

@@ -5,6 +5,7 @@ import iconLogout from "../../assets/logout.png";
 import { useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { authResult } from "../../store/actions/index";
+import Penface from "../../assets/penface.png";
 
 const Manager = (props) => {
   const history = useHistory();
@@ -26,18 +27,23 @@ const Manager = (props) => {
     }
   });
   return (
-    <div className={classes.Manager}>
-      <div>
-        <button onClick={reportHandler} className={classFormat.join(" ")}>
-          <img src={iconManager} /> REPORT MANAGER
-        </button>
+    <React.Fragment>
+      <div className={classes.Penface}>
+        <img src={Penface}></img>
       </div>
-      <div>
-        <button onClick={logoutHandler} className={classFormat.join(" ")}>
-          <img src={iconLogout} /> LOGOUT
-        </button>
+      <div className={classes.Manager}>
+        <div>
+          <button onClick={reportHandler} className={classFormat.join(" ")}>
+            <img src={iconManager} /> REPORT MANAGER
+          </button>
+        </div>
+        <div>
+          <button onClick={logoutHandler} className={classFormat.join(" ")}>
+            <img src={iconLogout} /> LOGOUT
+          </button>
+        </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 
